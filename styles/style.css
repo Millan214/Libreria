@@ -1,0 +1,45 @@
+@import url("template.css");
+body {
+  background: #c9bcff;
+  padding: 0;
+  margin: 0;
+}
+
+.custom_table {
+  font-family: 'Roboto Slab', serif;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 25px;
+  background: #fff;
+}
+
+.custom_table th {
+  border: 4px solid #4361EE;
+  border-right: 4px solid #fff;
+  padding: 8px 30px 8px 30px;
+  text-align: center;
+  background-color: #4361EE;
+  color: white;
+}
+
+.custom_table th:last-child {
+  border-right: 4px solid #4361EE;
+}
+
+.custom_table td {
+  border: 4px solid #4361EE;
+  padding: 8px 30px 8px 30px;
+}
+
+.custom_table tr {
+  background: #fff;
+}
+
+.custom_table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.custom_table tr:hover {
+  background-color: #ddd;
+}
+/*# sourceMappingURL=style.css.map */

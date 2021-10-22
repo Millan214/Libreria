@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="./styles/style.css">
+        <title>Registro</title>
+    </head>
+    <body>
+        <a href="./index" class="round_button border_radius_50 position_absolute w50px h50px">
+            <svg class="svg_dark_purple" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                width="50px" height="50px" viewBox="0 0 979.469 979.469" style="enable-background:new 0 0 979.469 979.469;"
+                xml:space="preserve">
+            <g>
+                <path d="M421.337,945.03l-377.5-378.1c-44.4-44.5-44.4-111.1,0-155.401l377.5-377.3c44.3-44.3,113.7-46.2,157.7-2.2
+                    c43,43,38.399,115.5-3.4,157.2l-184.399,184.4c0,0,465.1,0.6,465.3,0.6c30.8,0,60.5,12,81.6,34.4
+                    c50.601,54,37.101,148.5-27.7,184.4c-16.399,9.101-35.1,13.9-53.899,13.801l-465.3-0.4c0,0,184.3,184.2,184.399,184.3
+                    c41.9,41.9,46.101,114.101,3.4,156.9C535.037,991.631,465.637,989.331,421.337,945.03z"/>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            <g>
+            </g>
+            </svg>
+        </a>
+        <form action="" method="post" class="flex flex_h_center flex_v_center w100 h100">
+            <div  class="box flexbox flex_col">
+                <p class="input_label">Usuario</p>
+                <input type="text" name="usuario"
+                    class="input_text fsize30 w500px"
+                    spellcheck="false"
+                    placeholder="introduce un usuario"
+                    pattern="[a-zA-Z_0-9]{2,64}"
+                    autocomplete="off"
+                    value="<?php if (isset($_POST['submit'])) { echo $_POST['usuario']; }?>"
+                    required
+                >
+                <p class="input_label">Nombre</p>
+                <input type="text" name="nombre"
+                    class="input_text fsize30 w500px"
+                    spellcheck="false"
+                    placeholder="introduce tu nombre"
+                    pattern="[a-zA-Z_0-9]{2,64}"
+                    autocomplete="off"
+                    value="<?php if (isset($_POST['submit'])) { echo $_POST['nombre']; }?>"
+                    required
+                >
+                <p class="input_label">Primer apellido</p>
+                <input type="text" name="apellido"
+                    class="input_text fsize30 w500px"
+                    spellcheck="false"
+                    placeholder="introduce tu primer apellido"
+                    pattern="[a-zA-Z_0-9]{2,64}"
+                    autocomplete="off"
+                    value="<?php if (isset($_POST['submit'])) { echo $_POST['apellido']; }?>"
+                    required
+                >
+                <p class="input_label">E-Mail</p>
+                <input type="email" name="email"
+                    class="input_text fsize30 w500px"
+                    spellcheck="false"
+                    placeholder="introduce un E-Mail"
+                    pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                    autocomplete="off"
+                    value="<?php if (isset($_POST['submit'])) { echo $_POST['email']; }?>"
+                    required
+                >
+                <p class="input_label">Contraseña</p>
+                <input type="password" name="password"
+                    class="input_text fsize30 w500px"
+                    spellcheck="false"
+                    placeholder="introduce una contraseña"
+                    pattern="[a-zA-Z_0-9]{2,64}"
+                    autocomplete="off"
+                    required
+                >
+                <br>
+                <div class="w100 flex flex_end">
+                    <input type="submit" value="REGÍSTRAME" name="submit" class="input_submit">
+                </div>
+            </div>
+        </form>
+    </body>
+</html>
