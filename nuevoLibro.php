@@ -2,27 +2,27 @@
     /** Inicio la sesión */
     session_start();
 
-    /** Esta variable booleana determina si mostramos la página normal o el mensaje de regístrate primero */
-    $registrado = false;
-
     foreach (glob("./controller/*.php") as $filename){
+        require_once $filename;
+    }
+    foreach (glob("./controller/addons/*.php") as $filename){
         require_once $filename;
     }
 
     /** Compruebo que esté registrado */
     if (isset($_SESSION['user'])) {
-        /** Si está registrado */
-        $registrado = true;
+        
+        if (isset($_SESSION['success_imagen'])) {
+            if ($_SESSION['success_imagen']) {
+                mensajeExito("Libro añadido correctamente");
+            }else{
+                mensajeError("El libro no se ha podido añadir");
+            }
+        }
 
         /** Obtengo el usuario */
         $user = unserialize($_SESSION['user']);
 
-        if (isset($_POST['submit'])) {
-            echo $_POST['image_input'];
-        }
-
-    }else{
-        $registrado = false;
     }
     
 ?>
@@ -36,19 +36,7 @@
     </head>
     <body>
         <?php
-            if($registrado){
-                if(isset($_POST['submit'])){
-                    $libro = new Libro(
-                        $_POST['image_input'],
-                        0,
-                        $_POST['titulo'],
-                        $_POST['autor'],
-                        $_POST['editorial'],
-                        date('j/n/Y')
-                    );
-                    DB::addLibro($libro);
-                }
-
+            if(isset($_SESSION['user'])){
         ?>
             <!-- PÁGINA NORMAL 
                  Tremendo truco:
@@ -57,7 +45,7 @@
             -->
 
             <!-- Botón atrás -->
-            <a href="./catalog" class="round_button border_radius_50 position_absolute w50px h50px">
+            <a href="./catalog" class="round_button border_radius_50 position_absolute w50px h50px zindex3">
                 <svg class="svg_dark_purple" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                     width="50px" height="50px" viewBox="0 0 979.469 979.469" style="enable-background:new 0 0 979.469 979.469;"
                     xml:space="preserve">
@@ -100,7 +88,7 @@
                 </svg>
             </a>
 
-            <form action="" method="post" class="w100 h100 flex flex_v_center flex_h_center">
+            <form action="uploader" enctype="multipart/form-data" method="post" class="w100 h100 flex flex_v_center flex_h_center">
                 <div class="box flex flex_v_center">
                     <label for="image_input" class="cur_pointer">
                         <svg class=
@@ -129,7 +117,8 @@
                             ">
                             Seleccionar imagen
                         </div>
-                        <input type="file" id="image_input" name="image_input" accept="image/png, image/jpeg, image/jpg" class="visivility_hidden">
+                        <input type="hidden" name="MAX_FILE_SIZE" value="8388608"> <!-- Este num es en bytes -->
+                        <input required type="file" id="image_input" name="image_input" accept="image/png, image/jpeg, image/jpg" class="visivility_hidden">
                     </label>
                     <div class="flex flex_col margin_left_20px">
                         <label for="titulo">
@@ -139,7 +128,7 @@
                                 name="titulo"
                                 placeholder="Introduzca el título"
                                 class="input_text fsize30 w500px"
-                                pattern="[a-zA-Z_0-9]{2,64}"
+                                pattern="[a-zA-Z_0-9_ ]{2,64}"
                                 autocomplete="off"
                                 required>
                         </label>
@@ -150,7 +139,7 @@
                                 name="autor"
                                 placeholder="Introduzca el autor"
                                 class="input_text fsize30 w500px"
-                                pattern="[a-zA-Z_0-9]{2,64}"
+                                pattern="[a-zA-Z_0-9_ ]{2,64}"
                                 autocomplete="off"
                                 required>
                         </label>
@@ -161,7 +150,7 @@
                                 name="editorial"
                                 placeholder="Introduzca la editorial"
                                 class="input_text fsize30 w500px"
-                                pattern="[a-zA-Z_0-9]{2,64}"
+                                pattern="[a-zA-Z_0-9_ ]{2,64}"
                                 autocomplete="off"
                                 required>
                         </label>
@@ -173,16 +162,7 @@
             </form>
         <?php
             } else {
-        ?>
-            <!-- PÁGINA ERROR -->
-            <div class="w100 h100 flex flex_v_center flex_h_center flex_col">
-                <img src="./img/confused-wth.gif" alt="">
-                <h1 class="fsize30 purple text_align_center">
-                    HEY! <br>
-                    Primero te tienes que registrar
-                </h1>
-            </div>
-        <?php
+                new PaginaError();
             }
         ?>
     </body>

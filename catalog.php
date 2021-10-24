@@ -24,8 +24,6 @@
         if ( isset($_POST['buscar_submit']) && $_POST['input_busqueda'] != "" ) {
             $searchBy = $_POST['seach_by_radios'];
             $inputBusqueda = $_POST['input_busqueda'];
-        }else{
-
         }
     }else{
         $registrado = false;
@@ -113,14 +111,7 @@
                 <?php
                     } else {
                 ?>
-                    <!-- PÁGINA ERROR -->
-                    <div class="w100 h100 flex flex_v_center flex_h_center flex_col">
-                        <img src="./img/confused-wth.gif" alt="">
-                        <h1 class="fsize30 purple text_align_center">
-                            HEY! <br>
-                            Primero te tienes que registrar
-                        </h1>
-                    </div>
+                    <?php new PaginaError(); ?>
                 <?php
                     }
                 ?>

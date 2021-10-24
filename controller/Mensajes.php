@@ -1,4 +1,5 @@
 <?php
+    //TODO: poner una X que borre el mensaje
     function mensajeError($text){
 ?>
         <div class="

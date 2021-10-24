@@ -7,18 +7,7 @@
         require_once $filename;
     }
 
-    /** Obtengo el valor de la cookie de recordar contraseña */
-    $rememberPswd = $_COOKIE['rememberPswd'];
-    //echo $rememberPswd;
-
     if (isset($_POST['submit'])) {
-
-        //Sobreescribo la cookie
-        if(isset($_POST['rememberPswd'])){
-            setcookie("rememberPswd","true");
-        }else{
-            setcookie("rememberPswd","false");
-        }
 
         $user = $_POST['user'];
         $pswd = hash("sha512",$_POST['passwd'],false);
@@ -73,7 +62,7 @@
                 </label>
                 <div class="w100 pad_left10 pad_bottom30">
                     <label for="rememberPswd">
-                        <input type="checkbox" name="rememberPswd" value="true" <?php if($rememberPswd=="true"){echo "checked";}?>>
+                        <input type="checkbox" name="rememberPswd" value="true" checked>
                         <span class="fsize20 purple">recordar contraseña</span>
                     </label>
                 </div>

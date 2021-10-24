@@ -5,15 +5,20 @@
     foreach (glob("./controller/*.php") as $filename){
         require_once $filename;
     }
+    foreach (glob("./controller/addons/*.php") as $filename){
+        require_once $filename;
+    }
 
-    $user = unserialize($_SESSION['user']);
-    $isAdmin = $user->isAdmin();
+    if (isset($_SESSION['user'])) {
+        $user = unserialize($_SESSION['user']);
+        $isAdmin = $user->isAdmin();
 
-    $libros = DB::getAllBooks();
+        $libros = DB::getAllBooks();
 
-    if (isset($_GET['query'])) {
-        $query = explode("/",$_GET['query']);
-        $libros = DB::searchBy($query[0],$query[1]);
+        if (isset($_GET['query'])) {
+            $query = explode("/",$_GET['query']);
+            $libros = DB::searchBy($query[0],$query[1]);
+        }
     }
 
 ?>
@@ -32,6 +37,10 @@
         </style>
     </head>
     <body>
+
+    <?php 
+        if(isset($_SESSION['user'])) {
+    ?>
         <table class="custom_table">
             <tr>
                 <th>Imagen</th>
@@ -110,6 +119,10 @@
                     </tr>
             <?php } ?>  
         </table>
-        
+    <?php
+        }else{
+            new PaginaError(true);
+        }
+    ?>
     </body>
 </html>
