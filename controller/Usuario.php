@@ -56,25 +56,5 @@
             }            
         }
 
-        /**
-         * @return Array con los libros correspondientes a ese usuario.
-         */
-        function getBooks(){
-            $libros = [];
-
-            for ($i=0; $i < 20; $i++) { 
-                array_push($libros,new Libro(
-                    "./img/asimov-fundacion.jpg",
-                    "1",
-                    "El fin de la eternidad",
-                    "Isaac Asimov",
-                    "Best Seller",
-                    "30/04/2020"
-                ));
-            }
-
-            return $libros;
-        }
-
     }
 ?>

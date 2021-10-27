@@ -5,6 +5,7 @@
 
         public function __construct($_isAdmin){
             if (isset($_POST['salir'])) {
+                session_unset();
                 session_destroy();
                 header('Location: ./');
             }

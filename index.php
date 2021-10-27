@@ -16,7 +16,7 @@
             $_SESSION['user'] = serialize(DB::getUserDB($user));
             header('Location: catalog');
         }else{
-            mensajeError("ah");
+            mensajeError("Usuario o contraseña incorrectos");
         }
     }
 

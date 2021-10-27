@@ -30,7 +30,6 @@
     }
     
 ?>
-        <!-- PÁGINA NORMAL -->
         <!DOCTYPE html>
         <html>
             <head>

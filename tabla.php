@@ -19,6 +19,13 @@
             $query = explode("/",$_GET['query']);
             $libros = DB::searchBy($query[0],$query[1]);
         }
+
+        if (isset($_GET['prestamos'])) {
+            $login = $user->toArr()['login'];
+            //TODO: Hacer buen el searchby
+            //$libros = DB::searchBy("prestamos",$login);
+        }
+
     }
 
 ?>

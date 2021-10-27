@@ -41,6 +41,7 @@
                                 </div>
                             <?php } ?>
                         </div>
+                        <a href="./tabla?prestamos=prestamos" target="mainframe" class="round_button flex flex_v_center flex_h_center marg_top10px">Préstamos</a>
                     </div>
                 </div>
             <?php
