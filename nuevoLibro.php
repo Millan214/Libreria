@@ -37,6 +37,16 @@
     <body>
         <?php
             if(isset($_SESSION['user'])){
+                mostrarPagNormal();
+            } else {
+                new PaginaError();
+            }
+        ?>
+    </body>
+</html>
+
+<?php
+    function mostrarPagNormal(){
         ?>
             <!-- PÁGINA NORMAL 
                  Tremendo truco:
@@ -161,9 +171,5 @@
                 </div>
             </form>
         <?php
-            } else {
-                new PaginaError();
-            }
-        ?>
-    </body>
-</html>
+    }
+?>
