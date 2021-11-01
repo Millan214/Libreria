@@ -4,11 +4,6 @@
         private $isAdmin;
 
         public function __construct($_isAdmin){
-            if (isset($_POST['salir'])) {
-                session_unset();
-                session_destroy();
-                header('Location: ./');
-            }
             ?>
                 <div class="box_no_padding pad10px marg10px flex pad_right20">
                     <input type="submit" name="salir" value="Salir"

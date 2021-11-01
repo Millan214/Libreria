@@ -5,7 +5,7 @@
          * @return string Devuelve los argumentos que pide el constructor
          */
         public static function getArgs(){
-            return "login, password, nombre, apellido, email, tipo";
+            return "login, nombre, apellido, email, tipo";
         }
 
         private $login = "nd";
@@ -40,6 +40,7 @@
             return [
                 "login" => $this->login,
                 "nombre" => $this->nombre,
+                "apellido" => $this->apellido,
                 "email" => $this->email,
                 "tipo" => $this->tipo
             ];
@@ -49,10 +50,10 @@
          * @return boolean Comprueba si el usuario es administrador o no
          */
         public function isAdmin(){
-            if ($this->tipo == 0) {
-                return false;
-            }else{
+            if ($this->tipo == "admin") {
                 return true;
+            }else{
+                return false;
             }            
         }
 

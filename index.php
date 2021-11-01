@@ -16,15 +16,15 @@
         $user = $_POST['user'];
 
         // Contraseña del usuario
-        $pswd = hash("sha512",$_POST['passwd'],false);
+        $pswd = hash("sha512",$_POST['passwd']);
         
-        if(DB::checkLogIn($user,$pswd)){
+        if(checkLogIn($user,$pswd)){
 
             /**
              * Obtengo los datos del usuario en forma de objeto,
              * lo serialzo y meto la cadena resultante en la sesión 'user'
              */
-            $_SESSION['user'] = serialize(DB::getUserDB($user)); 
+            $_SESSION['user'] = serialize(getUserDB($user)); 
 
             // Cámbio de página
             header('Location: catalog');

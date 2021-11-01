@@ -28,14 +28,15 @@
 
             /** Creo el OBJETO libro */
             $libro = new Libro(
-                $_FILES['image_input']['name'],
+                "./img/".$_FILES['image_input']['name'],
                 0,
                 $_POST['titulo'],
                 $_POST['autor'],
                 $_POST['editorial'],
-                date('j/n/Y')
+                date('Y/n/j')
             );
-            DB::addLibro($libro);
+
+            addLibro($libro);
 
             /** Añado la imagen */
             $target_path = "./img/";

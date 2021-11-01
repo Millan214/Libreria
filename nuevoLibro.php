@@ -18,6 +18,7 @@
             }else{
                 mensajeError("El libro no se ha podido añadir");
             }
+            $_SESSION['success_imagen'] = null;
         }
 
         /** Obtengo el usuario */

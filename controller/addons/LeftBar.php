@@ -18,8 +18,8 @@
                         <div class="flex flex_col margin_left_20px">
                             <?php if ($_isAdmin) { ?>
                                 <div class="fsize20">
-                                    <input type="radio" name="seach_by_radios" value="id">
-                                    <label for="sechById">Id</label>
+                                    <input type="radio" name="seach_by_radios" value="cod_libro">
+                                    <label for="sechById">Cod Libro</label>
                                 </div>
                             <?php } ?>
                             <div class="fsize20">
@@ -36,7 +36,7 @@
                             </div>
                             <?php if ($_isAdmin) { ?>
                                 <div class="fsize20">
-                                    <input type="radio" name="seach_by_radios" value="fecha">
+                                    <input type="radio" name="seach_by_radios" value="fecha_insercion">
                                     <label for="sechByEditorial">Fecha</label>
                                 </div>
                             <?php } ?>

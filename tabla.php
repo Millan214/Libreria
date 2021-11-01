@@ -13,17 +13,17 @@
         $user = unserialize($_SESSION['user']);
         $isAdmin = $user->isAdmin();
 
-        $libros = DB::getAllBooks();
+        $libros = getAllBooks();
 
         if (isset($_GET['query'])) {
             $query = explode("/",$_GET['query']);
-            $libros = DB::searchBy($query[0],$query[1]);
+            $libros = bookSearchBy($query[0],$query[1]);
         }
 
         if (isset($_GET['prestamos'])) {
             $login = $user->toArr()['login'];
-            //TODO: Hacer buen el searchby
-            //$libros = DB::searchBy("prestamos",$login);
+            //TODO: Hacer buen el bookSearchBy
+            //$libros = bookSearchBy("prestamos",$login);
         }
 
     }
@@ -91,7 +91,9 @@
                         }
                         ?>
                         <td class="text_align_center">
-                            <div
+                            <a  class="purple"
+                                href="infolibro?id=<?php echo $libros[$i]->toArr()['id']?>">
+                                <div
                                 class="
                                 box_no_padding
                                 fsize20
@@ -105,12 +107,9 @@
                                 sombra_enlace
                                 "
                                 >
-                                <a class="purple"
-                                   href="infolibro?id=<?php echo $libros[$i]->toArr()['id']?>">
-                                   ¡Lo quiero!
-                                </a>
-                                
+                                ¡Lo quiero!
                             </div>
+                            </a>
                         </td>
                         <?php
                         

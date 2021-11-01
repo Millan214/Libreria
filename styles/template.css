@@ -182,6 +182,10 @@
   color: #fff;
 }
 
+.black {
+  color: #fff;
+}
+
 /* enlaces */
 .enlace:hover {
   color: #3F37C9;
@@ -635,7 +639,11 @@
 }
 
 .bggreen {
-  background-color: #39e647;
+  background-color: #5bb863;
+}
+
+.bg_dark_green {
+  background-color: #5bb863;
 }
 
 .bgtransparent {

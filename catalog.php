@@ -9,17 +9,30 @@
         require_once $filename;
     }
 
-    /** 
-     * TODO: 
-     * Conexión con base de datos
-     */
+    
 
     if ( isset($_SESSION['user'])) {
+
+        if (isset($_POST['salir'])) {
+            session_unset();
+            session_destroy();
+            header('Location: ./');
+        }
+
+        //Guardo datos relevantes sobre la página para pasarselos a la funcion que crea la página dinamicamente
+        $data = [];
+
         $user = unserialize($_SESSION['user']);
         $isAdmin = $user->isAdmin();
+
+        $data += ["isAdmin" => $isAdmin];
+
         if ( isset($_POST['buscar_submit']) && $_POST['input_busqueda'] != "" ) {
-            $searchBy = $_POST['seach_by_radios'];
+            $bookSearchBy = $_POST['seach_by_radios'];
+            $data += ["bookSearchBy" => $bookSearchBy];
+
             $inputBusqueda = $_POST['input_busqueda'];
+            $data += ["inputBusqueda" => $inputBusqueda];
         }
     }
     
@@ -35,7 +48,7 @@
     <body>
         <?php
             if( isset($_SESSION['user']) ){
-                mostrarPagNormal($isAdmin);
+                mostrarPagNormal($data);
             } else {
                 new PaginaError();
             }
@@ -44,25 +57,25 @@
 </html>
 
 <?php
-    function mostrarPagNormal($isAdmin){
+    function mostrarPagNormal($data){
         ?>
             <!-- PÁGINA NORMAL -->
-            <form action="" method="post">
+            <form action="catalog" method="post">
                 <div class="flex h99 w100">
                     <!-- Left bar -->
-                    <?php new LeftBar($isAdmin);?>
+                    <?php new LeftBar($data['isAdmin'])?>
                     <!-- / Left bar -->
                     <div class="flex w100 margin_right_10px flex_col">
                         
                         <!-- Top bar -->
-                        <?php new TopBar($isAdmin);?>
+                        <?php new TopBar($data['isAdmin'])?>
                         <!-- / Top bar -->
 
                         <!-- Main content -->
-                            <iframe name="mainframe" src="tabla.php?
+                            <iframe name="mainframe" src="tabla.php
                             <?php
-                                if (isset($inputBusqueda)) {
-                                    echo "query=".$searchBy."/".$inputBusqueda;
+                                if (isset($data['inputBusqueda'])) {
+                                    echo "?query=".$data['bookSearchBy']."/".$data['inputBusqueda'];
                                 }
                             ?>" frameborder="0" 
                                 class="
@@ -73,7 +86,7 @@
                                     ">
                             </iframe>
                             <!-- if adimn (espacio para que se vean bien los botones) -->
-                                <?php if ($isAdmin) { ?>
+                                <?php if ($data['isAdmin']) { ?>
                                     <div class="w100 h15"></div>
                                 <?php } ?>
                             <!-- / if admin -->
@@ -81,7 +94,7 @@
                     </div>
 
                     <!-- Admin buttons -->
-                        <?php if ($isAdmin) { ?>
+                        <?php if ($data['isAdmin']) { ?>
                             <div
                                 class="
                                     marg10px
