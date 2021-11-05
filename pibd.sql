@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-11-2021 a las 16:06:18
+-- Tiempo de generación: 05-11-2021 a las 14:39:48
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 8.0.11
 
@@ -34,7 +34,7 @@ CREATE TABLE `libros` (
   `editorial` varchar(100) DEFAULT NULL,
   `fecha_insercion` date DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
-  `deleted` int(1) DEFAULT NULL
+  `deleted` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -69,7 +69,8 @@ INSERT INTO `libros` (`cod_libro`, `titulo`, `autor`, `editorial`, `fecha_inserc
 (25, 'El problema de los tres cuerpos', 'Liu Cixin', 'RBA', '2021-11-01', './img/el-problema-de-los-tres-cuerpos.jpg', NULL),
 (26, 'ILLUMINAE. Expediente_01', 'Amie Kaufman', 'ALFAGUARA', '2021-11-01', './img/illuminae.jpg', NULL),
 (27, 'GEMINA. Expediente_02', 'Amie Kaufman', 'Oneworld tions', '2021-11-01', './img/gemina.jpg', NULL),
-(28, 'OBSIDIO. Expediente_03', 'Amie Kaufman', 'Oneworld tions', '2021-11-01', './img/obsidio.jpg', NULL);
+(28, 'OBSIDIO. Expediente_03', 'Amie Kaufman', 'Oneworld tions', '2021-11-01', './img/obsidio.jpg', NULL),
+(60, 'todo sobre el jamon', 'millan', 'best jamones', '2021-11-05', './img/donsucio.PNG', '2021-11-05');
 
 -- --------------------------------------------------------
 
@@ -85,6 +86,17 @@ CREATE TABLE `prestamos` (
   `devuelto` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `prestamos`
+--
+
+INSERT INTO `prestamos` (`cod_prestamo`, `cod_libro`, `login`, `prestado`, `devuelto`) VALUES
+(1, 1, 'millan214', '2021-11-05', '2021-11-05'),
+(2, 5, 'millan214', '2021-11-05', NULL),
+(3, 4, 'millan214', '2021-11-05', NULL),
+(9, 2, 'millan214', '2021-11-05', NULL),
+(10, 22, 'millan214', '2021-11-05', '2021-11-05');
+
 -- --------------------------------------------------------
 
 --
@@ -97,15 +109,16 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(50) DEFAULT NULL,
   `apellidos` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `tipo` varchar(30) NOT NULL
+  `tipo` varchar(30) NOT NULL,
+  `deleted` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`login`, `password`, `nombre`, `apellidos`, `email`, `tipo`) VALUES
-('millan214', '263fec58861449aacc1c328a4aff64aff4c62df4a2d50b3f207fa89b6e242c9aa778e7a8baeffef85b6ca6d2e7dc16ff0a760d59c13c238f6bcdc32f8ce9cc62', 'millan', 'martinez', 'milmararco@gmail.com', 'admin');
+INSERT INTO `usuarios` (`login`, `password`, `nombre`, `apellidos`, `email`, `tipo`, `deleted`) VALUES
+('millan214', '263fec58861449aacc1c328a4aff64aff4c62df4a2d50b3f207fa89b6e242c9aa778e7a8baeffef85b6ca6d2e7dc16ff0a760d59c13c238f6bcdc32f8ce9cc62', 'millan', 'martinez', 'milmararco@gmail.com', 'admin', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -139,7 +152,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `cod_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `cod_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+
+--
+-- AUTO_INCREMENT de la tabla `prestamos`
+--
+ALTER TABLE `prestamos`
+  MODIFY `cod_prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Restricciones para tablas volcadas
