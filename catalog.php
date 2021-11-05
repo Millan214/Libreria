@@ -72,10 +72,10 @@
                         <!-- / Top bar -->
 
                         <!-- Main content -->
-                            <iframe name="mainframe" src="tabla.php
+                            <iframe name="mainframe" src="tabla.php?
                             <?php
                                 if (isset($data['inputBusqueda'])) {
-                                    echo "?query=".$data['bookSearchBy']."/".$data['inputBusqueda'];
+                                    echo "query=".$data['bookSearchBy']."/".$data['inputBusqueda'];
                                 }
                             ?>" frameborder="0" 
                                 class="

@@ -5,6 +5,8 @@
     require_once("Libro.php");
 
     /**
+     * Brief:   Obtiene todos los libros.
+     * 
      * @return Array con todos los libros de la biblioteca.
      */
     function getAllBooks(){
@@ -22,7 +24,7 @@
                     array(PDO::ATTR_PERSISTENT => true)
                 );
         
-                $query = $dbConn->query("select * from libros");
+                $query = $dbConn->query("select * from libros where deleted is null");
                 $libros = [];
                 foreach ($query as $row) {
                     array_push($libros,new Libro(
@@ -48,6 +50,8 @@
     }
 
     /**
+     * Brief:   Comprueba que el usuario se corresponde con la contraseña.
+     * 
      * @return boolean true en caso de que el usuario y la contraseña coincidan.
      */
     function checkLogIn($login,$pswd){
@@ -66,6 +70,8 @@
     }
 
     /**
+     * Brief:   Realiza una búsqueda simple.
+     * 
      * @param string            $key        Nombre del atributo a buscar.       ej: "titulo"
      * @param string            $value      Valor del campo del libro a buscar. ej: "bobedas de acero"
      * @return Array[Libro]     $resultado  Resultado de la búsqueda en forma de array de Libros.
@@ -83,7 +89,7 @@
                 array(PDO::ATTR_PERSISTENT => true)
             );
     
-            $query = $dbConn->query("select * from libros where lower($key) like '%$value%'");
+            $query = $dbConn->query("select * from libros where lower($key) like '%$value%' and deleted is null");
             $resultado = [];
             foreach ($query as $row) {
                 array_push($resultado,new Libro(
@@ -110,6 +116,12 @@
         return $resultado;
     }
 
+    /**
+     * Brief:   Obtiene todos los datos de un libro.
+     * 
+     * @param   string  $id Codigo del libro a buscar
+     * @return  Libro       Objeto Libro con todos los datos del libro correspondiente al parámetro $id
+     */
     function getBookById(String $id){
 
         try{
@@ -123,7 +135,7 @@
                 array(PDO::ATTR_PERSISTENT => true)
             );
     
-            $query = $dbConn->query("select * from libros where cod_libro = '$id'");
+            $query = $dbConn->query("select * from libros where cod_libro = '$id' and deleted is null");
             foreach ($query as $row) {
                 return new Libro(
                     $row['imagen'],
@@ -148,16 +160,30 @@
         return $resultado;
     }
 
+    /**
+     * Brief:   Comprueba si alguien tiene el libro o está disponible.
+     * 
+     * EXPERIMENTAL         Esta función está en fase de desarrollo, por el momento siempre devuelve TRUE
+     * @param   string  $id Codigo del libro a comprovar
+     * @return  boolean     True:   si el libro [SI] está disponible
+     *                      False:  si el libro [NO] está disponible
+     */
     function isBookAvailable(String $id){
         return true;
     }
 
+    /**
+     * Brief:   Obtiene tods los datos de un usuario.
+     * 
+     * @param   string      $login  El login del usuario a buscar
+     * @return  Usuario             El usuario con todos los datos correspondientes al $login introducido por parámetro
+     */
     function getUserDB(String $login){
         try {
 
             require("initDB.inc.php");
 
-            $query = $dbConn->query("select * from usuarios where login = '$login'");
+            $query = $dbConn->query("select * from usuarios where login = '$login' and deleted is null");
             foreach ($query as $row) {
                 return new Usuario($row['login'],$row['nombre'],$row['apellidos'],$row['email'],$row['tipo']);
             }
@@ -170,16 +196,25 @@
         return -1;
     }
 
+    /**
+     * Brief:   Obtiene la contraseña de un usuario.
+     * 
+     * @param   string  $login      El login del usuario a buscar
+     * @return  string              La contraseña del usuario
+     *                              La contraseña está hasheada con sha512
+     */
     function getUserPasswordDB(String $login){
         try {
 
             require("initDB.inc.php");
 
-            $query = $dbConn->query("select * from usuarios where login = '$login'");
+            $query = $dbConn->query("select * from usuarios where login = '$login' and deleted is null");
             foreach ($query as $row) {
+                $query = null;
                 return $row['password'];
             }
             $query = null;
+
             $dbConn = null;
         } catch (PDOException $e) {
             print_r($e);
@@ -188,6 +223,13 @@
         return -1;
     }
 
+    /**
+     * Brief:   Comprueba si un libro existe.
+     * 
+     * @param   Libro   $book       El libro a buscar
+     * @return  boolean             True:   Si el libro [SI] existe
+     *                              False:  Si el libro [NO] existe
+     */
     function bookExists($book){
 
         $dbBook = getBookById($book->toArr()['id']);
@@ -205,6 +247,11 @@
 
     }
 
+    /**
+     * Brief:   Añade un libro a la base de datos.
+     * 
+     * @param   Libro   $book   Objeto libro con cuyos datos se poblará la base de datos
+     */
     function addLibro(Libro $book){
         if ( !bookExists($book) ) {
             try{
@@ -244,6 +291,13 @@
 
     }
 
+    /**
+     * Brief:   "Elimina" un libro de la base de datos
+     *          Cambia el campo 'deleted' a la fecha de hoy, por lo que al no ser null,
+     *          ninguna función de este archivo podrá acceder a una tupla con estas características.
+     * 
+     * @param   string  $id  Codigo del libro a eliminar
+     */
     function deleteLibro(String $id){
         try{
 
@@ -252,7 +306,7 @@
             $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $dbConn->beginTransaction();            
 
-            $dbConn->exec("delete from libros where cod_libro = '$id'");
+            $dbConn->exec("update libros set deleted = CURRENT_DATE() where cod_libro = '$id'");
 
             $dbConn->commit();
             $dbConn = null;
@@ -265,6 +319,13 @@
         return 0;
     }
 
+    /**
+     * Brief:   Añade un usuario a la base de datos.
+     * 
+     * @param   Usuario     $user       Objeto usuario con el que se poblaran todos los campos de la base de datos menos la contraseña
+     * @param   string      $password   Contraseña a introducir en la base de datos
+     *                                  La contraseña está hasheada con sha512
+     */
     function addUser( Usuario $user, $password ){
         try {
             
@@ -298,5 +359,186 @@
             print_r($e);
         }       
     }
+
+    /**
+     * Brief:   Presta un libro a un usuario.
+     * 
+     * @param   string  $login      Login del usuario que quiere pedir el libro.
+     * @param   string  $codLibro   Codigo del libro a prestar.
+     */
+    function prestarLibro( $_login, $_codLibro ){
+        try{
+
+            require("initDB.inc.php");
+            
+            if (!checkLibroPrestado($_login,$_codLibro)) {
+                
+                $dbConn->beginTransaction();
+
+                $statement = $dbConn->prepare("insert into prestamos ( cod_libro,login,prestado ) values (:codLibro,:login,CURRENT_DATE())");
+
+                $statement->bindParam(':codLibro', $codLibro);
+                $statement->bindParam(':login', $login);
+
+                //insertar una fila
+                $codLibro = $_codLibro;
+                $login = $_login;
+
+                $statement->execute();
+
+                $dbConn->commit();
+
+                $dbConn = null;
+                
+                return true;
+
+            }
+
+            return false;
+
+        } catch (PDOException $e) {
+            print_r($e);
+        }
+    }
+
+    /**
+     * Brief:   Devuelve un libro de un usuario.
+     * 
+     * @param   string  $login      Login del usuario que quiere pedir el libro.
+     * @param   string  $codLibro   Codigo del libro a devolver.
+     */
+    function devolverLibro( $_login, $_codLibro ){
+
+        try{
+
+            require("initDB.inc.php");
+
+            $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+            $dbConn->beginTransaction();            
+
+            $dbConn->exec("update prestamos set devuelto = CURRENT_DATE() where cod_libro = '$_codLibro' and login = '$_login'");
+
+            $dbConn->commit();
+            $dbConn = null;
+
+            return true;
+
+        } catch (PDOException $e) {
+            print_r($e);
+        }
+        return false;
+    }    
+
+    /**
+     * Brief:   Comprueba si el libro dado está prestado por un usuario.
+     * 
+     * @param   string  $_login     Login del usuario
+     * @param   string  $_codLibro  Codigo del libro a buscar
+     * @return  boolean             True:   Si el usuario tiene el libro.
+     */
+    function checkLibroPrestado( $_login, $_codLibro ){
+        try {
+
+            require("initDB.inc.php");
+
+            $query = $dbConn->query("select * from prestamos where login = '$_login' and cod_libro = '$_codLibro' and devuelto is null");
+            foreach ($query as $row) {
+                $query = null;
+                $dbConn = null;
+                return true;
+            }
+            $query = null;
+
+            $dbConn = null;
+        } catch (PDOException $e) {
+            print_r($e);
+        }        
+
+        return false;
+    }
+
+    /**
+     * Brief:   Obtiene los prestamos de un usuario.
+     * 
+     * @param   string          $login  Login del usuario del que queremos obtener los prestamos
+     * @return  Array[Libro]    $arr    Array con los prestamos
+     */
+    function getBookUserPrestamo( $login ){
+        $arr = [];
+        try {
+
+            require("initDB.inc.php");
+            
+            $query = $dbConn->query("select * from libros where cod_libro in ( select cod_libro from prestamos where login = '$login' and devuelto is null );");
+            foreach ($query as $row) {
+                $query = null;
+                array_push( $arr, new Libro(
+                        $row['imagen'],
+                        $row['cod_libro'],
+                        $row['titulo'],
+                        $row['autor'],
+                        $row['editorial'],
+                        $row['fecha_insercion']
+                    )
+                );
+            }
+            $query = null;
+
+            $dbConn = null;
+
+            return $arr;
+
+        } catch (PDOException $e) {
+            print_r($e);
+        }        
+
+        return -1;
+    }
+
+    /**
+     * Brief:   Obtiene los prestamos de un usuario.
+     * 
+     * @param   string          $login  Login del usuario del que queremos obtener los prestamos
+     * @return  Array[Libro]    $arr    Array con los prestamos
+     */
+    function getAllBookPrestamo( $login ){
+        $arr = [];
+        try {
+
+            require("initDB.inc.php");
+            
+            $query = $dbConn->query("select * from libros where cod_libro in ( select cod_libro from prestamos where devuelto is null )");
+            foreach ($query as $row) {
+                $query = null;
+                array_push( $arr, new Libro(
+                        $row['imagen'],
+                        $row['cod_libro'],
+                        $row['titulo'],
+                        $row['autor'],
+                        $row['editorial'],
+                        $row['fecha_insercion']
+                    )
+                );
+            }
+            $query = null;
+
+            $dbConn = null;
+            
+            return $arr;
+
+        } catch (PDOException $e) {
+            print_r($e);
+        }        
+
+        return -1;
+    }
+
+
+    /**
+     * Brief:   Obtiene todos los prestamos.
+     * 
+     * 
+     */
+
 
 ?>

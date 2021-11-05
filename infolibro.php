@@ -53,21 +53,49 @@
         $libro = getBookById($_SESSION['book_id']);
         $available = isBookAvailable($libro->toArr()['id']);
 
-        
+        if ( isset($_GET['submit']) ) {
+            if (checkLibroPrestado($user->toArr()['login'],$_SESSION['book_id'])) {
+                ?>
+                    <div class="
+                        fsize30
+                        flex
+                        h100
+                        flex_h_center
+                        flex_v_center
+                    ">
+                    <?php
+                        if (prestarLibro( $user->toArr()['login'] , $_SESSION['book_id'] )) {
+                            echo "El préstamo se ha realizado correctamente";
+                        }else{
+                            echo "Parece que este libro ya le tienes";
+                        }
+                    ?>
+                    </div>
+                <?php
+            }
+        }
 
-        if (isset($_GET['submit'])) {
-            ?>
-                <div class="
-                    fsize30
-                    flex
-                    h100
-                    flex_h_center
-                    flex_v_center
-                ">
-                    El préstamo se ha realizado correctamente
-                </div>
-            <?php
-                    } 
+        if( isset($_GET['devolver_submit']) ){
+            if (checkLibroPrestado($user->toArr()['login'], $_SESSION['book_id'])) {
+                ?>
+                    <div class="
+                        fsize30
+                        flex
+                        h100
+                        flex_h_center
+                        flex_v_center
+                    ">
+                    <?php
+                        if (devolverLibro( $user->toArr()['login'] , $_SESSION['book_id'] )) {
+                            echo "El libro se ha devuelto correctamente";
+                        }else{
+                            echo "¿que?";
+                        }
+                    ?>
+                    </div>
+                <?php
+            }
+        }
 
         ?>
         <form action="" method="get">
@@ -132,10 +160,13 @@
                     <h1><?php echo $libro->toArr()['titulo'];?></h1>
                     <p><?php echo $libro->toArr()['autor'];?></p>
                     
-                        <?php if ($available) { ?>
+                        <?php if (!checkLibroPrestado($user->toArr()['login'],$_SESSION['book_id'])) { ?>
                             <input type="submit" value="Solicitar préstamo" name="submit" 
                             class="sombra_enlace box fsize30 purple">
-                        <?php } ?>
+                        <?php }else{ ?>
+                            <input type="submit" value="Devolver libro" name="devolver_submit" 
+                            class="sombra_enlace box fsize30 purple">
+                        <?php }?>
                     
                 </div>
                 <?php if ($isAdmin) { ?>

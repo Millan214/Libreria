@@ -22,8 +22,7 @@
 
         if (isset($_GET['prestamos'])) {
             $login = $user->toArr()['login'];
-            //TODO: Hacer buen el bookSearchBy
-            //$libros = bookSearchBy("prestamos",$login);
+            $libros = getBookUserPrestamo( $login );
         }
 
     }
