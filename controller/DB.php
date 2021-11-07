@@ -24,11 +24,11 @@
                     array(PDO::ATTR_PERSISTENT => true)
                 );
         
-                $query = $dbConn->query("select * from libros where deleted is null");
+                $query = $dbConn->query("select * from libros where borrado_virtual is null");
                 $libros = [];
                 foreach ($query as $row) {
                     array_push($libros,new Libro(
-                        $row['imagen'],
+                        $row['url_imagen'],
                         $row['cod_libro'],
                         $row['titulo'],
                         $row['autor'],
@@ -55,17 +55,24 @@
      * @return boolean true en caso de que el usuario y la contraseña coincidan.
      */
     function checkLogIn($login,$pswd){
-        $user = getUserDB($login);
+        try {
 
-        if (gettype($user) != "integer") {
-            if (
-                $login == $user->toArr()['login'] &&
-                $pswd == getUserPasswordDB($login)
-            ) {
+            require("initDB.inc.php");
+
+            $query = $dbConn->query("select * from usuarios where login = '$login' and password = '$pswd'");
+            foreach ($query as $row) {
+                $query = null;
+                echo "hola";
                 return true;
             }
-        }
-        
+            $query = null;
+
+            $dbConn = null;
+        } catch (PDOException $e) {
+            echo "getUserPasswordDB:<br>";
+            print_r($e);
+        }        
+
         return false;
     }
 
@@ -89,11 +96,11 @@
                 array(PDO::ATTR_PERSISTENT => true)
             );
     
-            $query = $dbConn->query("select * from libros where lower($key) like '%$value%' and deleted is null");
+            $query = $dbConn->query("select * from libros where lower($key) like '%$value%' and borrado_virtual is null");
             $resultado = [];
             foreach ($query as $row) {
                 array_push($resultado,new Libro(
-                    $row['imagen'],
+                    $row['url_imagen'],
                     $row['cod_libro'],
                     $row['titulo'],
                     $row['autor'],
@@ -135,10 +142,10 @@
                 array(PDO::ATTR_PERSISTENT => true)
             );
     
-            $query = $dbConn->query("select * from libros where cod_libro = '$id' and deleted is null");
+            $query = $dbConn->query("select * from libros where cod_libro = '$id' and borrado_virtual is null");
             foreach ($query as $row) {
                 return new Libro(
-                    $row['imagen'],
+                    $row['url_imagen'],
                     $row['cod_libro'],
                     $row['titulo'],
                     $row['autor'],
@@ -183,13 +190,14 @@
 
             require("initDB.inc.php");
 
-            $query = $dbConn->query("select * from usuarios where login = '$login' and deleted is null");
+            $query = $dbConn->query("select * from usuarios where login = '$login'");
             foreach ($query as $row) {
                 return new Usuario($row['login'],$row['nombre'],$row['apellidos'],$row['email'],$row['tipo']);
             }
             $query = null;
             $dbConn = null;
         } catch (PDOException $e) {
+            echo "getUserDB:<br>";
             print_r($e);
         }        
 
@@ -208,7 +216,7 @@
 
             require("initDB.inc.php");
 
-            $query = $dbConn->query("select * from usuarios where login = '$login' and deleted is null");
+            $query = $dbConn->query("select * from usuarios where login = '$login' and borrado_virtual is null");
             foreach ($query as $row) {
                 $query = null;
                 return $row['password'];
@@ -217,6 +225,7 @@
 
             $dbConn = null;
         } catch (PDOException $e) {
+            echo "getUserPasswordDB:<br>";
             print_r($e);
         }        
 
@@ -257,21 +266,19 @@
             try{
 
                 require("initDB.inc.php");
-                
+
                 $dbConn->beginTransaction();
-                $statement = $dbConn->prepare("insert into libros (titulo,autor,editorial,fecha_insercion,imagen) values (:titulo,:autor,:editorial,:fecha_insercion,:imagen)");
+                $statement = $dbConn->prepare("insert into libros (titulo,autor,editorial,fecha_insercion,url_imagen) values (:titulo,:autor,:editorial,NOW(),:imagen)");
 
                 $statement->bindParam(':titulo', $titulo);
                 $statement->bindParam(':autor', $autor);
                 $statement->bindParam(':editorial', $editorial);
-                $statement->bindParam(':fecha_insercion', $fecha_insercion);
                 $statement->bindParam(':imagen', $imagen);
 
                 //insertar una fila
                 $titulo = $book->toArr()["titulo"];
                 $autor = $book->toArr()["autor"];
                 $editorial = $book->toArr()["editorial"];
-                $fecha_insercion = $book->toArr()["fecha"];
                 $imagen = $book->toArr()["imagen"];
 
                 $statement->execute();
@@ -293,7 +300,7 @@
 
     /**
      * Brief:   "Elimina" un libro de la base de datos
-     *          Cambia el campo 'deleted' a la fecha de hoy, por lo que al no ser null,
+     *          Cambia el campo 'borrado_virtual' a la fecha de hoy, por lo que al no ser null,
      *          ninguna función de este archivo podrá acceder a una tupla con estas características.
      * 
      * @param   string  $id  Codigo del libro a eliminar
@@ -306,7 +313,7 @@
             $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $dbConn->beginTransaction();            
 
-            $dbConn->exec("update libros set deleted = CURRENT_DATE() where cod_libro = '$id'");
+            $dbConn->exec("update libros set borrado_virtual = NOW() where cod_libro = '$id'");
 
             $dbConn->commit();
             $dbConn = null;
@@ -332,7 +339,7 @@
             require("initDB.inc.php");
 
             $dbConn->beginTransaction();
-            $statement = $dbConn->prepare("insert into usuarios values (:login,:password,:nombre,:apellidos,:email,:tipo)");
+            $statement = $dbConn->prepare("insert into usuarios values (:login,:password,:nombre,:apellidos,'',:email,:tipo)");
 
             $statement->bindParam(':login', $login);
             $statement->bindParam(':password', $password);
@@ -353,10 +360,14 @@
 
             $dbConn->commit();
 
+            mensajeExito("Usuario añadido correctamente");
+
             $dbConn = null;
 
         } catch (PDOException $e) {
-            print_r($e);
+            echo "addUser:<br>";
+            echo explode("]: ",$e->getMessage())[1];
+            mensajeError("ha sucedido un error");
         }       
     }
 
@@ -375,7 +386,7 @@
                 
                 $dbConn->beginTransaction();
 
-                $statement = $dbConn->prepare("insert into prestamos ( cod_libro,login,prestado ) values (:codLibro,:login,CURRENT_DATE())");
+                $statement = $dbConn->prepare("insert into prestamos ( cod_libro,login,prestado ) values (:codLibro,:login,NOW())");
 
                 $statement->bindParam(':codLibro', $codLibro);
                 $statement->bindParam(':login', $login);
@@ -416,7 +427,7 @@
             $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $dbConn->beginTransaction();            
 
-            $dbConn->exec("update prestamos set devuelto = CURRENT_DATE() where cod_libro = '$_codLibro' and login = '$_login'");
+            $dbConn->exec("update prestamos set devuelto = NOW() where cod_libro = '$_codLibro' and login = '$_login'");
 
             $dbConn->commit();
             $dbConn = null;
@@ -473,7 +484,7 @@
             foreach ($query as $row) {
                 $query = null;
                 array_push( $arr, new Libro(
-                        $row['imagen'],
+                        $row['url_imagen'],
                         $row['cod_libro'],
                         $row['titulo'],
                         $row['autor'],
@@ -511,7 +522,7 @@
             foreach ($query as $row) {
                 $query = null;
                 array_push( $arr, new Libro(
-                        $row['imagen'],
+                        $row['url_imagen'],
                         $row['cod_libro'],
                         $row['titulo'],
                         $row['autor'],

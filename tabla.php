@@ -106,7 +106,7 @@
                                 sombra_enlace
                                 "
                                 >
-                                ¡Lo quiero!
+                                info
                             </div>
                             </a>
                         </td>

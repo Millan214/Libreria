@@ -9,11 +9,10 @@
             $_POST['nombre'],
             $_POST['apellido'],
             $_POST['email'],
-            'user'
+            'usuario'
         );
         $passwd = hash('sha512',$_POST['password']);
         addUser( $usuario , $passwd );
-        mensajeExito("Usuario añadido correctamente");
     }
 ?>
 

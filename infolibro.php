@@ -54,7 +54,7 @@
         $available = isBookAvailable($libro->toArr()['id']);
 
         if ( isset($_GET['submit']) ) {
-            if (checkLibroPrestado($user->toArr()['login'],$_SESSION['book_id'])) {
+            if (!checkLibroPrestado($user->toArr()['login'],$_SESSION['book_id'])) {
                 ?>
                     <div class="
                         fsize30

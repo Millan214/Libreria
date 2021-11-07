@@ -1,7 +1,7 @@
 <?php
 
     $dbHost = "localhost";
-    $dbName = "pibd";
+    $dbName = "biblioteca";
     $dbUser = "root";
     $dbPassword = "";
 
