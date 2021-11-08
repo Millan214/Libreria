@@ -192,7 +192,7 @@
 
             $query = $dbConn->query("select * from usuarios where login = '$login'");
             foreach ($query as $row) {
-                return new Usuario($row['login'],$row['nombre'],$row['apellidos'],$row['email'],$row['tipo']);
+                return new Usuario($row['login'],$row['nombre'],$row['apellido1']." ".$row['apellido2'],$row['email'],$row['tipo']);
             }
             $query = null;
             $dbConn = null;
@@ -339,7 +339,7 @@
             require("initDB.inc.php");
 
             $dbConn->beginTransaction();
-            $statement = $dbConn->prepare("insert into usuarios values (:login,:password,:nombre,:apellidos,'',:email,:tipo)");
+            $statement = $dbConn->prepare("insert into usuarios values (:login,:password,:nombre,:apellidos,null,:email,:tipo,null)");
 
             $statement->bindParam(':login', $login);
             $statement->bindParam(':password', $password);
@@ -544,6 +544,32 @@
         return -1;
     }
 
+    /**
+     * Actualiza un libro.
+     * @param   string  $_codLibro   Codigo del libro a actualizar
+     * @param   string  $_titulo     Titulo del libro
+     * @param   string  $_autor      Autor del libro
+     */
+    function updateLibro($_codLibro, $_titulo, $_autor){
+        try{
+
+            require("initDB.inc.php");
+
+            $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+            $dbConn->beginTransaction();            
+
+            $dbConn->exec("update libros set titulo='$_titulo', autor='$_autor' where cod_libro='$_codLibro'");
+
+            $dbConn->commit();
+            $dbConn = null;
+
+            return true;
+
+        } catch (PDOException $e) {
+            print_r($e);
+        }
+        return false;
+    }
 
     /**
      * Brief:   Obtiene todos los prestamos.

@@ -48,6 +48,13 @@
             header("Location: tabla");
         }
 
+        if(isset($_GET['actualizar'])){
+            if(updateLibro($_SESSION['book_id'],$_GET['bookName'],$_GET['bookAuthor'])){
+                unset($_SESSION['book_id']);
+                header("Location: tabla");
+            }
+        }
+
         $user = unserialize($_SESSION['user']);
         $isAdmin = $user->isAdmin();
         $libro = getBookById($_SESSION['book_id']);
@@ -157,16 +164,40 @@
                     </a>
                 <img src="<?php echo $libro->toArr()['imagen']?>" alt="" class="flex_v_center w500px h500px fit_scaledown margin_right_20px">
                 <div>
-                    <h1><?php echo $libro->toArr()['titulo'];?></h1>
-                    <p><?php echo $libro->toArr()['autor'];?></p>
-                    
-                        <?php if (!checkLibroPrestado($user->toArr()['login'],$_SESSION['book_id'])) { ?>
-                            <input type="submit" value="Solicitar préstamo" name="submit" 
-                            class="sombra_enlace box fsize30 purple">
+                    <?php if ($isAdmin) { ?>
+
+                        <input type="text" name="bookName"
+                        class="input_text fsize30 w500px"
+                        spellcheck="false"
+                        placeholder="sin nombre"
+                        pattern=".{2,64}"
+                        autocomplete="off"
+                        value="<?php echo $libro->toArr()['titulo'];?>"
+                        >
+
+                        <input type="text" name="bookAuthor"
+                        class="input_text fsize30 w500px"
+                        spellcheck="false"
+                        placeholder="sin nombre"
+                        pattern=".{2,64}"
+                        autocomplete="off"
+                        value="<?php echo $libro->toArr()['autor'];?>"
+                        >
+                        <br>
+                        <br>
+
+                    <?php }else{ ?>
+                        <h1><?php echo $libro->toArr()['titulo'];?></h1>
+                        <p><?php echo $libro->toArr()['autor'];?></p>
+                    <?php } ?>
+
+                    <?php if (!checkLibroPrestado($user->toArr()['login'],$_SESSION['book_id'])) { ?>
+                        <input type="submit" value="Solicitar préstamo" name="submit" 
+                        class="sombra_enlace box fsize30 purple">
                         <?php }else{ ?>
-                            <input type="submit" value="Devolver libro" name="devolver_submit" 
-                            class="sombra_enlace box fsize30 purple">
-                        <?php }?>
+                        <input type="submit" value="Devolver libro" name="devolver_submit" 
+                        class="sombra_enlace box fsize30 purple">
+                    <?php }?>
                     
                 </div>
                 <?php if ($isAdmin) { ?>

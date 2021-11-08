@@ -47,7 +47,9 @@
                         flex flex_v_center margin_left_20px
                         fsize20
                     ">
-                        <?php echo $user->toArr()['nombre']; ?>
+                        <?php
+                            echo $user->toArr()['nombre']." ".$user->toArr()['apellido'];
+                        ?>
                     </div>
                     <!-- / NOMBRE -->
 
