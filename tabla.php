@@ -70,6 +70,8 @@
                             w100px
                             h100px
                             fit_cover
+                            flex
+                            flex_v_center
                         ">
                     </td>
                     <?php
@@ -90,7 +92,7 @@
                         }
                         ?>
                         <td class="text_align_center">
-                            <a  class="purple"
+                            <a  class="purple nodecoration"
                                 href="infolibro?id=<?php echo $libros[$i]->toArr()['id']?>">
                                 <div
                                 class="

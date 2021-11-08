@@ -74,7 +74,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce un usuario"
-                        pattern="[a-zA-Z_0-9]{2,64}"
+                        pattern=".{2,64}"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['usuario']; }?>"
                         required
@@ -86,7 +86,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce tu nombre"
-                        pattern="[a-zA-Z_0-9]{2,64}"
+                        pattern=".{2,64}"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['nombre']; }?>"
                         required
@@ -98,7 +98,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce tu primer apellido"
-                        pattern="[a-zA-Z_0-9]{2,64}"
+                        pattern=".{2,64}"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['apellido']; }?>"
                         required
@@ -106,11 +106,11 @@
                 <!-- / INPUT - APELLIDO -->
                 <p class="input_label">E-Mail</p>
                 <!-- INPUT - EMAIL -->
-                    <input type="email" name="email"
+                    <input type="text" name="email"
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce un E-Mail"
-                        pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                        pattern=".{2,64}+@[a-z0-9.-]{1,15}+\.[a-z]{2,4}$"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['email']; }?>"
                         required
@@ -122,7 +122,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce una contraseña"
-                        pattern="[a-zA-Z_0-9]{2,64}"
+                        pattern=".{2,64}"
                         autocomplete="off"
                         required
                     >

@@ -53,6 +53,10 @@ $pink: #F72585;
     height: 300px;
 }
 
+.h100p{
+    height: 100%;
+}
+
 .h100{
     height: 100vh;
 }
@@ -322,6 +326,10 @@ $pink: #F72585;
 /* Posicionamiento Flex */
 .flex{
     display: flex;
+}
+
+.flex_strech{
+    align-items: stretch;
 }
 
 .flexbox{

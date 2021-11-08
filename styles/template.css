@@ -49,6 +49,10 @@
   height: 300px;
 }
 
+.h100p {
+  height: 100%;
+}
+
 .h100 {
   height: 100vh;
 }
@@ -430,6 +434,12 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+}
+
+.flex_strech {
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
 }
 
 .flexbox {

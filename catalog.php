@@ -23,9 +23,8 @@
         $data = [];
 
         $user = unserialize($_SESSION['user']);
-        $isAdmin = $user->isAdmin();
 
-        $data += ["isAdmin" => $isAdmin];
+        $data += ["user" => $user];
 
         if ( isset($_POST['buscar_submit']) && $_POST['input_busqueda'] != "" ) {
             $bookSearchBy = $_POST['seach_by_radios'];
@@ -63,12 +62,12 @@
             <form action="catalog" method="post">
                 <div class="flex h99 w100">
                     <!-- Left bar -->
-                    <?php new LeftBar($data['isAdmin'])?>
+                    <?php new LeftBar($data['user']->isAdmin())?>
                     <!-- / Left bar -->
                     <div class="flex w100 margin_right_10px flex_col">
                         
                         <!-- Top bar -->
-                        <?php new TopBar($data['isAdmin'])?>
+                        <?php new TopBar($data['user'])?>
                         <!-- / Top bar -->
 
                         <!-- Main content -->
@@ -86,7 +85,7 @@
                                     ">
                             </iframe>
                             <!-- if adimn (espacio para que se vean bien los botones) -->
-                                <?php if ($data['isAdmin']) { ?>
+                                <?php if ($data['user']->isAdmin()) { ?>
                                     <div class="w100 h15"></div>
                                 <?php } ?>
                             <!-- / if admin -->
@@ -94,7 +93,7 @@
                     </div>
 
                     <!-- Admin buttons -->
-                        <?php if ($data['isAdmin']) { ?>
+                        <?php if ($data['user']->isAdmin()) { ?>
                             <div
                                 class="
                                     marg10px

@@ -3,7 +3,7 @@
 
         private $isAdmin;
 
-        public function __construct($_isAdmin){
+        public function __construct($user){
             ?>
                 <div class="box_no_padding pad10px marg10px flex pad_right20">
                     <input type="submit" name="salir" value="Salir"
@@ -24,7 +24,7 @@
                         "
                     >
                     <!-- SUDO -->
-                        <?php if ($_isAdmin) { ?>
+                        <?php if ($user->isAdmin()) { ?>
                             <div class="flex flex_v_center margin_left_20px">
                                 <span class="
                                     bgpink
@@ -41,6 +41,16 @@
                             </div>
                         <?php } ?>
                     <!-- / SUDO -->
+                    
+                    <!-- NOMBRE -->
+                    <div class="
+                        flex flex_v_center margin_left_20px
+                        fsize20
+                    ">
+                        <?php echo $user->toArr()['nombre']; ?>
+                    </div>
+                    <!-- / NOMBRE -->
+
                     <div class="flex w100 flex_end flex_v_center">
                         <svg width="50" height="50" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M43.4624 40.871L30.95 28.3586C33.3737 25.3648 34.833 21.5606 34.833 17.4174C34.833 7.81447 27.0193 0.000854492 17.4164 0.000854492C7.81353 0.000854492 0 7.81439 0 17.4173C0 27.0202 7.81362 34.8338 17.4165 34.8338C21.5598 34.8338 25.3639 33.3745 28.3577 30.9509L40.8701 43.4632C41.2276 43.8207 41.6969 44.0004 42.1663 44.0004C42.6357 44.0004 43.105 43.8207 43.4625 43.4632C44.1793 42.7464 44.1793 41.5878 43.4624 40.871ZM17.4165 31.1672C9.83391 31.1672 3.66666 24.9999 3.66666 17.4173C3.66666 9.83467 9.83391 3.66743 17.4165 3.66743C24.9991 3.66743 31.1664 9.83467 31.1664 17.4173C31.1664 24.9999 24.9991 31.1672 17.4165 31.1672Z" fill="#4361EE"/>
