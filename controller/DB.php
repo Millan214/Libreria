@@ -586,9 +586,10 @@
      * @param   string  $_autor      Autor del libro
      */
     function updateLibro($_codLibro, $_titulo, $_autor){
-        try{
 
-            require("initDB.inc.php");
+        require("initDB.inc.php");
+
+        try{
 
             $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $dbConn->beginTransaction();     
@@ -600,7 +601,7 @@
             $query->bindParam(':codLibro',$_codLibro);
             $query->bindParam(':autor',$_autor);
 
-            $dbConn->execute();
+            $query->execute();
 
             $dbConn->commit();
 
