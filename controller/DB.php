@@ -620,4 +620,63 @@
 
     }
 
+
+    function compruebaRecordar($login, $idSesion){
+
+        require("initDB.inc.php");
+
+        try {
+            
+            $dbConn->beginTransaction();
+
+            $sql = "select * from usuarios where login=? and ID_session=?";
+
+            $query = $dbConn->prepare($sql);
+
+            $query->execute([$login,$idSesion]);
+
+            $dbConn = null;
+
+            return !empty($query->fetchAll());
+
+        } catch (PDOException $e) {
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        }
+
+    }
+
+    function updateSessionID($login, $idSesion){
+        require("initDB.inc.php");
+
+        try{
+
+            $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+            $dbConn->beginTransaction();     
+            
+            $sql = "update usuarios set ID_session= :idSesion where login= :login";
+            $query = $dbConn->prepare($sql);
+            
+            $query->bindParam(':idSesion',$idSesion);
+            $query->bindParam(':login',$login);
+
+            $query->execute();
+
+            $dbConn->commit();
+
+            $dbConn = null;
+            $query = null;
+
+            return true;
+
+        } catch (PDOException $e) {
+            print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        }
+        return false;
+    }
+
 ?>

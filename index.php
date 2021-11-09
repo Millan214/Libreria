@@ -7,6 +7,14 @@
         require_once $filename;
     }
 
+    /** Autologin */
+    if( isset($_COOKIE['login']) && isset($_COOKIE['id_sesion']) ){
+        if(compruebaRecordar( $_COOKIE['login'], $_COOKIE['id_sesion'] )){
+            $_SESSION['user'] = serialize(getUserDB($_COOKIE['login']));
+            header("Location: catalog");
+        }
+    }
+
     /**
      * Recogemos los datos del formulario
      */
@@ -24,7 +32,23 @@
              * Obtengo los datos del usuario en forma de objeto,
              * lo serialzo y meto la cadena resultante en la sesión 'user'
              */
-            $_SESSION['user'] = serialize(getUserDB($user)); 
+            $_SESSION['user'] = serialize(getUserDB($user));
+
+            $_SESSION['login'] = $_POST['user'];
+
+            if(isset($_POST['rememberPswd']) && ($_POST['rememberPswd']=="on")){
+                
+                //regenero la ID session
+                session_regenerate_id(); 
+    
+                //actualizar la base de datos con session_id
+                updateSessionID($_POST['user'],session_id());
+    
+                //crear la cookie con login y session_id
+                $expira = 3600 * 24;// 24 horas (3600 (1h) * 24)
+                setcookie("login",$_POST['user'],time()+$expira);
+                setcookie("id_sesion",session_id(),time()+$expira);
+            }
 
             // Cámbio de página
             header('Location: catalog');
@@ -87,7 +111,7 @@
                 <div class="w100 pad_left10 pad_bottom30">
                     <label for="rememberPswd">
                         <!-- INPUT RECORDAR CONTRASEÑA -->
-                            <input type="checkbox" name="rememberPswd" value="true" checked>
+                            <input type="checkbox" name="rememberPswd" checked>
                         <!-- INPUT RECORDAR CONTRASEÑA -->
                         <span class="fsize20 purple">recordar contraseña</span>
                     </label>
