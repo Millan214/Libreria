@@ -63,7 +63,7 @@
                             class="input_text fsize30"
                             spellcheck="false"
                             placeholder="introduce tu usuario"
-                            pattern=".{2,64}"
+                            pattern=".{2,128}"
                             autocomplete="off"
                             value="<?php if (isset($_POST['submit'])) { echo $_POST['user']; } ?>"
                             required
@@ -78,7 +78,7 @@
                             class="input_text fsize20"
                             spellcheck="false"
                             placeholder="introduce tu contraseña"
-                            pattern=".{2,64}"
+                            pattern=".{2,128}"
                             autocomplete="off"
                             required
                         >

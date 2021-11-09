@@ -58,7 +58,7 @@
                             <path d="M43.4624 40.871L30.95 28.3586C33.3737 25.3648 34.833 21.5606 34.833 17.4174C34.833 7.81447 27.0193 0.000854492 17.4164 0.000854492C7.81353 0.000854492 0 7.81439 0 17.4173C0 27.0202 7.81362 34.8338 17.4165 34.8338C21.5598 34.8338 25.3639 33.3745 28.3577 30.9509L40.8701 43.4632C41.2276 43.8207 41.6969 44.0004 42.1663 44.0004C42.6357 44.0004 43.105 43.8207 43.4625 43.4632C44.1793 42.7464 44.1793 41.5878 43.4624 40.871ZM17.4165 31.1672C9.83391 31.1672 3.66666 24.9999 3.66666 17.4173C3.66666 9.83467 9.83391 3.66743 17.4165 3.66743C24.9991 3.66743 31.1664 9.83467 31.1664 17.4173C31.1664 24.9999 24.9991 31.1672 17.4165 31.1672Z" fill="#4361EE"/>
                         </svg>
 
-                        <input type="text" name="input_busqueda" autocomplete="off" placeholder="Búsqueda..." class="input_text" spellcheck="false">
+                        <input type="text" name="input_busqueda" autocomplete="off" pattern=".{2,128}" placeholder="Búsqueda..." class="input_text" spellcheck="false">
 
                         <div 
                             id="seachby_button"
@@ -74,7 +74,7 @@
                             </svg>
                         </div>
 
-                        <input autofocus type="submit" value="Buscar" name="buscar_submit" class="sombra_enlace box_no_padding margin_left_20px pad10px pad_left30 pad_right30 fsize30 purple fwbold marg10px"></input>
+                        <input autofocus type="submit" value="Buscar" name="buscar_submit" pattern=".{2,128}" class="sombra_enlace box_no_padding margin_left_20px pad10px pad_left30 pad_right30 fsize30 purple fwbold marg10px"></input>
                     </div>
                 </div>
             <?php
