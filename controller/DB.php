@@ -13,40 +13,39 @@
 
             require("initDB.inc.php");
 
-            $libros = [];
+            try {
+                $dbConn->beginTransaction();
+                $sql = 'select * from libros where borrado_virtual is null';
+                $query = $dbConn->prepare($sql);
+                $query->execute();
+                $dbConn = null;
 
-            try{
+                //array de libros
+                $librosObj = [];
 
-                $dbConn = new PDO(
-                    "mysql:host=$dbHost;dbname=$dbName",
-                    $dbUser,
-                    $dbPassword,
-                    array(PDO::ATTR_PERSISTENT => true)
-                );
-        
-                $query = $dbConn->query("select * from libros where borrado_virtual is null");
-                $libros = [];
-                foreach ($query as $row) {
-                    array_push($libros,new Libro(
-                        $row['url_imagen'],
-                        $row['cod_libro'],
-                        $row['titulo'],
-                        $row['autor'],
-                        $row['editorial'],
-                        $row['fecha_insercion']
+                while($results = $query->fetch()){
+                    array_push($librosObj,new Libro(
+                        $results['url_imagen'],
+                        $results['cod_libro'],
+                        $results['titulo'],
+                        $results['autor'],
+                        $results['editorial'],
+                        $results['fecha_insercion']
                     ));
                 }
 
                 $query = null;
-                $dbConn = null;
-                return $libros;
-        
-            }catch(PDOException $error){
-                print_r($error);
-                return -1;
-            }        
 
-            return -1;
+                return $librosObj;                
+
+            } catch (DOMException $e) {
+                print_r($e);
+                $dbConn->rollBack();
+                $dbConn = null;
+                return false;
+            }       
+
+            return false;
     }
 
     /**
@@ -55,23 +54,28 @@
      * @return boolean true en caso de que el usuario y la contraseña coincidan.
      */
     function checkLogIn($login,$pswd){
-        try {
 
-            require("initDB.inc.php");
+        require("initDB.inc.php");
 
-            $query = $dbConn->query("select * from usuarios where login = '$login' and password = '$pswd'");
-            foreach ($query as $row) {
-                $query = null;
-                echo "hola";
-                return true;
-            }
-            $query = null;
+        try{
+
+            $dbConn->beginTransaction();
+    
+            $sql = "select * from usuarios where login = ? and password = ?";
+            $sth = $dbConn->prepare($sql);
+    
+            $sth->execute([$login,$pswd]);
 
             $dbConn = null;
-        } catch (PDOException $e) {
-            echo "getUserPasswordDB:<br>";
+
+            return !empty($sth->fetchAll());            
+    
+        }catch(PDOException $e){
             print_r($e);
-        }        
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        }       
 
         return false;
     }
@@ -85,42 +89,58 @@
      */
     function bookSearchBy(String $key, String $value){
 
+        require("initDB.inc.php");
+
         try{
-
-            require("initDB.inc.php");
-
-            $dbConn = new PDO(
-                "mysql:host=$dbHost;dbname=$dbName",
-                $dbUser,
-                $dbPassword,
-                array(PDO::ATTR_PERSISTENT => true)
-            );
     
-            $query = $dbConn->query("select * from libros where lower($key) like '%$value%' and borrado_virtual is null");
-            $resultado = [];
-            foreach ($query as $row) {
-                array_push($resultado,new Libro(
-                    $row['url_imagen'],
-                    $row['cod_libro'],
-                    $row['titulo'],
-                    $row['autor'],
-                    $row['editorial'],
-                    $row['fecha_insercion']
-                ));
-            }
-
-            $query = null;
-            $dbConn = null;
-            return $resultado;
+            $dbConn->beginTransaction();
     
-        }catch(PDOException $error){
-            print_r($error);
-            return -1;
-        }        
-
-        return -1;
+            $sql = "desc libros";
+            $query = $dbConn->prepare($sql);
+            $query->execute();
+    
+            $keyExists = false;
+    
+            //obtengo los nombres de las columnas de la tabla libros y los comparo con la key que me han pasado
+            while ($results = $query->fetch()){
+                if($key == $results[0]){
+                    $keyExists = $results[0];
+                }
+            } 
+    
+            if($keyExists){
+    
+                $sql = "select * from libros where $keyExists like concat('%',?,'%') and borrado_virtual is null";
+                $query = $dbConn->prepare($sql);
+                $query->execute([$value]);
+    
+                $dbConn = null;
         
-        return $resultado;
+                $librosObj = [];
+    
+                while ($results = $query->fetch()){
+                    array_push($librosObj,new Libro(
+                        $results['url_imagen'],
+                        $results['cod_libro'],
+                        $results['titulo'],
+                        $results['autor'],
+                        $results['editorial'],
+                        $results['fecha_insercion']
+                    ));
+                }
+    
+                return $librosObj;
+    
+            }else{
+                return [];
+            }  
+    
+        }catch(PDOException $e){
+            print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        } 
     }
 
     /**
@@ -131,40 +151,37 @@
      */
     function getBookById(String $id){
 
+        require("initDB.inc.php");
+
         try{
 
-            require("initDB.inc.php");
-
-            $dbConn = new PDO(
-                "mysql:host=$dbHost;dbname=$dbName",
-                $dbUser,
-                $dbPassword,
-                array(PDO::ATTR_PERSISTENT => true)
-            );
+            $dbConn->beginTransaction();
     
-            $query = $dbConn->query("select * from libros where cod_libro = '$id' and borrado_virtual is null");
-            foreach ($query as $row) {
-                return new Libro(
-                    $row['url_imagen'],
-                    $row['cod_libro'],
-                    $row['titulo'],
-                    $row['autor'],
-                    $row['editorial'],
-                    $row['fecha_insercion']
-                );
-            }
-
-            $query = null;
+            $sql = "select * from libros where cod_libro = ? and borrado_virtual is null";
+    
+            $query = $dbConn->prepare($sql);
             $dbConn = null;
+    
+            $query->execute([$id]);
+    
+            $book = $query->fetchAll()[0];
+            
+            return new Libro(
+                $book['url_imagen'],
+                $book['cod_libro'],
+                $book['titulo'],
+                $book['autor'],
+                $book['editorial'],
+                $book['fecha_insercion']
+            );
     
         }catch(PDOException $error){
             print_r($error);
-            return -1;
+            $dbConn->rollBack();
+            return false;
         }        
-
+    
         return "no hay libros";
-        
-        return $resultado;
     }
 
     /**
@@ -186,50 +203,32 @@
      * @return  Usuario             El usuario con todos los datos correspondientes al $login introducido por parámetro
      */
     function getUserDB(String $login){
+
+        require("initDB.inc.php");
+
         try {
 
-            require("initDB.inc.php");
+            $dbConn->beginTransaction();
 
-            $query = $dbConn->query("select * from usuarios where login = '$login'");
-            foreach ($query as $row) {
-                return new Usuario($row['login'],$row['nombre'],$row['apellido1']." ".$row['apellido2'],$row['email'],$row['tipo']);
-            }
-            $query = null;
+            $sql = "select * from usuarios where login = ?";
+            $query = $dbConn->prepare($sql);
+            $query->execute([$login]);
+
             $dbConn = null;
+
+            while($res = $query->fetch()){
+                return new Usuario($res['login'],$res['nombre'],$res['apellido1']." ".$res['apellido2'],$res['email'],$res['tipo']);
+            }
+
+            $query = null;
+            
         } catch (PDOException $e) {
             echo "getUserDB:<br>";
             print_r($e);
+            $dbConn->rollBack();
         }        
 
-        return -1;
-    }
-
-    /**
-     * Brief:   Obtiene la contraseña de un usuario.
-     * 
-     * @param   string  $login      El login del usuario a buscar
-     * @return  string              La contraseña del usuario
-     *                              La contraseña está hasheada con sha512
-     */
-    function getUserPasswordDB(String $login){
-        try {
-
-            require("initDB.inc.php");
-
-            $query = $dbConn->query("select * from usuarios where login = '$login' and borrado_virtual is null");
-            foreach ($query as $row) {
-                $query = null;
-                return $row['password'];
-            }
-            $query = null;
-
-            $dbConn = null;
-        } catch (PDOException $e) {
-            echo "getUserPasswordDB:<br>";
-            print_r($e);
-        }        
-
-        return -1;
+        return false;
     }
 
     /**
@@ -291,6 +290,8 @@
 
             } catch (PDOException $e) {
                 print_r($e);
+                $dbConn->rollBack();
+                $dbConn = null;
             }       
         }else{
             return -1;
@@ -306,24 +307,29 @@
      * @param   string  $id  Codigo del libro a eliminar
      */
     function deleteLibro(String $id){
+
+        require("initDB.inc.php");
+
         try{
-
-            require("initDB.inc.php");
-
-            $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $dbConn->beginTransaction();            
-
-            $dbConn->exec("update libros set borrado_virtual = NOW() where cod_libro = '$id'");
-
+            $sql = "update libros set borrado_virtual = NOW() where cod_libro = :id";
+            $query = $dbConn->prepare($sql);
+            $query->bindParam(':id',$id);
+            
+            $query->execute();
             $dbConn->commit();
-            $dbConn = null;
 
-            return 1;
+            $dbConn = null;
+            $query = null;
+
+            return true;
 
         } catch (PDOException $e) {
             print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
         }
-        return 0;
+        return false;
     }
 
     /**
@@ -420,24 +426,32 @@
      */
     function devolverLibro( $_login, $_codLibro ){
 
+        require("initDB.inc.php");
+
         try{
+            $dbConn->beginTransaction();
+            $sql = "update prestamos set devuelto = NOW() where cod_libro = :codLibro and login = :login";
+            $query = $dbConn->prepare($sql);
 
-            require("initDB.inc.php");
-
-            $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-            $dbConn->beginTransaction();            
-
-            $dbConn->exec("update prestamos set devuelto = NOW() where cod_libro = '$_codLibro' and login = '$_login'");
-
+            $query->bindParam(':codLibro',$_codLibro);
+            $query->bindParam(':login',$_login);
+            
+            $query->execute();
             $dbConn->commit();
+
             $dbConn = null;
+            $query = null;
 
             return true;
 
         } catch (PDOException $e) {
             print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
         }
         return false;
+        
     }    
 
     /**
@@ -448,24 +462,32 @@
      * @return  boolean             True:   Si el usuario tiene el libro.
      */
     function checkLibroPrestado( $_login, $_codLibro ){
+
+        require("initDB.inc.php");
+
         try {
 
-            require("initDB.inc.php");
+            $dbConn->beginTransaction();
 
-            $query = $dbConn->query("select * from prestamos where login = '$_login' and cod_libro = '$_codLibro' and devuelto is null");
-            foreach ($query as $row) {
-                $query = null;
-                $dbConn = null;
-                return true;
-            }
-            $query = null;
+            $sql = "select * from prestamos where login = ? and cod_libro = ? and devuelto is null";
+            $query = $dbConn->prepare($sql);
+            $query->execute([$_login,$_codLibro]);
 
             $dbConn = null;
+
+            return !empty($query->fetchAll());
+
+            $query = null;
+            
         } catch (PDOException $e) {
+            echo "getUserDB:<br>";
             print_r($e);
-        }        
+            $dbConn->rollBack();
+            $dbConn = null;
+        }
 
         return false;
+
     }
 
     /**
@@ -475,73 +497,86 @@
      * @return  Array[Libro]    $arr    Array con los prestamos
      */
     function getBookUserPrestamo( $login ){
-        $arr = [];
+
+        require("initDB.inc.php");
+
         try {
-
-            require("initDB.inc.php");
-            
-            $query = $dbConn->query("select * from libros where cod_libro in ( select cod_libro from prestamos where login = '$login' and devuelto is null );");
-            foreach ($query as $row) {
-                $query = null;
-                array_push( $arr, new Libro(
-                        $row['url_imagen'],
-                        $row['cod_libro'],
-                        $row['titulo'],
-                        $row['autor'],
-                        $row['editorial'],
-                        $row['fecha_insercion']
-                    )
-                );
-            }
-            $query = null;
-
+            $dbConn->beginTransaction();
+            $sql = "select * from libros where cod_libro in ( select cod_libro from prestamos where login = ? and devuelto is null )";
+            $query = $dbConn->prepare($sql);
+            $query->execute([$login]);
             $dbConn = null;
 
-            return $arr;
+            //array de libros
+            $librosObj = [];
 
-        } catch (PDOException $e) {
+            while($results = $query->fetch()){
+                array_push($librosObj,new Libro(
+                    $results['url_imagen'],
+                    $results['cod_libro'],
+                    $results['titulo'],
+                    $results['autor'],
+                    $results['editorial'],
+                    $results['fecha_insercion']
+                ));
+            }
+
+            $query = null;
+
+            return $librosObj;                
+
+        } catch (DOMException $e) {
             print_r($e);
-        }        
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        }       
 
-        return -1;
+        return false;
     }
 
     /**
-     * Brief:   Obtiene los prestamos de un usuario.
+     * Brief:   Obtiene todos los prestamos. (de momento no se usa)
      * 
-     * @param   string          $login  Login del usuario del que queremos obtener los prestamos
      * @return  Array[Libro]    $arr    Array con los prestamos
      */
-    function getAllBookPrestamo( $login ){
-        $arr = [];
-        try {
+    function getAllBookPrestamo(){
 
-            require("initDB.inc.php");
-            
-            $query = $dbConn->query("select * from libros where cod_libro in ( select cod_libro from prestamos where devuelto is null )");
-            foreach ($query as $row) {
-                $query = null;
-                array_push( $arr, new Libro(
-                        $row['url_imagen'],
-                        $row['cod_libro'],
-                        $row['titulo'],
-                        $row['autor'],
-                        $row['editorial'],
-                        $row['fecha_insercion']
-                    )
-                );
+        require("initDB.inc.php");
+
+        try {
+            $dbConn->beginTransaction();
+            $sql = "select * from libros where cod_libro in ( select cod_libro from prestamos where devuelto is null )";
+            $query = $dbConn->prepare($sql);
+            $query->execute();
+            $dbConn = null;
+
+            //array de libros
+            $librosObj = [];
+
+            while($results = $query->fetch()){
+                array_push($librosObj,new Libro(
+                    $results['url_imagen'],
+                    $results['cod_libro'],
+                    $results['titulo'],
+                    $results['autor'],
+                    $results['editorial'],
+                    $results['fecha_insercion']
+                ));
             }
+
             $query = null;
 
-            $dbConn = null;
-            
-            return $arr;
+            return $librosObj;                
 
-        } catch (PDOException $e) {
+        } catch (DOMException $e) {
             print_r($e);
-        }        
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        }       
 
-        return -1;
+        return false;
     }
 
     /**
@@ -556,26 +591,32 @@
             require("initDB.inc.php");
 
             $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-            $dbConn->beginTransaction();            
+            $dbConn->beginTransaction();     
+            
+            $sql = "update libros set titulo= :titulo, autor= :autor where cod_libro= :codLibro";
+            $query = $dbConn->prepare($sql);
+            
+            $query->bindParam(':titulo',$_titulo);
+            $query->bindParam(':codLibro',$_codLibro);
+            $query->bindParam(':autor',$_autor);
 
-            $dbConn->exec("update libros set titulo='$_titulo', autor='$_autor' where cod_libro='$_codLibro'");
+            $dbConn->execute();
 
             $dbConn->commit();
+
             $dbConn = null;
+            $query = null;
 
             return true;
 
         } catch (PDOException $e) {
             print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
         }
         return false;
+
     }
-
-    /**
-     * Brief:   Obtiene todos los prestamos.
-     * 
-     * 
-     */
-
 
 ?>

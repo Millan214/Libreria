@@ -4,17 +4,10 @@
     $dbUser = "root";
     $dbPassword = "";
 
-    require_once('../controller/Libro.php');
     require_once('../controller/DB.php');
+//
+    
+    print_r(getBookUserPrestamo("millan214"));
 
-    $book = new Libro(
-        "imagen",
-        "0",
-        "titulo",
-        "autor",
-        "editorial",
-        "1999-1-1"
-    );
-    //echo addLibro($book);
 
 ?>
