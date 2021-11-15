@@ -1,5 +1,6 @@
 <?php
     /** Inicio la sesión */
+    //TODO: poner el boton salir como enlace a un archivo logout.php, ahí se hacen cosas.
     session_start();
 
     foreach (glob("./controller/addons/*.php") as $filename){
@@ -9,17 +10,7 @@
         require_once $filename;
     }
 
-    
-
     if ( isset($_SESSION['user'])) {
-
-        if (isset($_POST['salir'])) {
-            session_unset();
-            session_destroy();
-            setcookie("login",$_POST['login'],time()-1);
-            setcookie("id_sesion",session_id(),time()-1);
-            header('Location: ./');
-        }
 
         //Guardo datos relevantes sobre la página para pasarselos a la funcion que crea la página dinamicamente
         $data = [];

@@ -27,7 +27,6 @@
         $pswd = hash("sha512",$_POST['passwd']);
         
         if(checkLogIn($user,$pswd)){
-
             /**
              * Obtengo los datos del usuario en forma de objeto,
              * lo serialzo y meto la cadena resultante en la sesión 'user'

@@ -2,6 +2,7 @@
 
     session_start(); 
 
+    //Importamos todos los php
     foreach (glob("./controller/*.php") as $filename){
         require_once $filename;
     }

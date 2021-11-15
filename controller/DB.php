@@ -11,41 +11,41 @@
      */
     function getAllBooks(){
 
-            require("initDB.inc.php");
+        require("initDB.inc.php");
 
-            try {
-                $dbConn->beginTransaction();
-                $sql = 'select * from libros where borrado_virtual is null';
-                $query = $dbConn->prepare($sql);
-                $query->execute();
-                $dbConn = null;
+        try {
+            $dbConn->beginTransaction();
+            $sql = 'select * from libros where borrado_virtual is null';
+            $query = $dbConn->prepare($sql);
+            $query->execute();
+            $dbConn = null;
 
-                //array de libros
-                $librosObj = [];
+            //array de libros
+            $librosObj = [];
 
-                while($results = $query->fetch()){
-                    array_push($librosObj,new Libro(
-                        $results['url_imagen'],
-                        $results['cod_libro'],
-                        $results['titulo'],
-                        $results['autor'],
-                        $results['editorial'],
-                        $results['fecha_insercion']
-                    ));
-                }
+            while($results = $query->fetch()){
+                array_push($librosObj,new Libro(
+                    $results['url_imagen'],
+                    $results['cod_libro'],
+                    $results['titulo'],
+                    $results['autor'],
+                    $results['editorial'],
+                    $results['fecha_insercion']
+                ));
+            }
 
-                $query = null;
+            $query = null;
 
-                return $librosObj;                
+            return $librosObj;                
 
-            } catch (DOMException $e) {
-                print_r($e);
-                $dbConn->rollBack();
-                $dbConn = null;
-                return false;
-            }       
-
+        } catch (DOMException $e) {
+            print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
             return false;
+        }       
+
+        return false;
     }
 
     /**

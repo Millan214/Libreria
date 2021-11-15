@@ -6,7 +6,7 @@
         public function __construct($user){
             ?>
                 <div class="box_no_padding pad10px marg10px flex pad_right20">
-                    <input type="submit" name="salir" value="Salir"
+                    <a href="logout.inc.php"
                     class="
                         sombra_enlace
                         pad_left20
@@ -22,7 +22,7 @@
                         fwbold
                         margin_right_10px
                         "
-                    >
+                    >Salir</a>
                     <!-- SUDO -->
                         <?php if ($user->isAdmin()) { ?>
                             <div class="flex flex_v_center margin_left_20px">
@@ -59,7 +59,7 @@
                         </svg>
 
                         <input type="text" name="input_busqueda" autocomplete="off" pattern=".{2,128}" placeholder="Búsqueda..." class="input_text" spellcheck="false">
-
+                        <!--
                         <div 
                             id="seachby_button"
                             class="
@@ -73,7 +73,7 @@
                                 <path d="M13.0862 15.0864C13.5656 15.5655 14.1944 15.8056 14.8232 15.8056C15.4517 15.8056 16.0805 15.5661 16.5601 15.0868L28.2321 3.41459C29.492 2.15467 28.5996 0.000423254 26.8179 0.000398609L2.82848 6.67876e-05C1.04667 4.21415e-05 0.154312 2.15433 1.41424 3.41428L13.0862 15.0864Z" fill="#4361EE"/>
                             </svg>
                         </div>
-
+                        -->
                         <input autofocus type="submit" value="Buscar" name="buscar_submit" pattern=".{2,128}" class="sombra_enlace box_no_padding margin_left_20px pad10px pad_left30 pad_right30 fsize30 purple fwbold marg10px"></input>
                     </div>
                 </div>
