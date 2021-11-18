@@ -139,7 +139,7 @@
                                 name="titulo"
                                 placeholder="Introduzca el título"
                                 class="input_text fsize30 w500px"
-                                pattern="[a-zA-Z_0-9_ ]{2,64}"
+                                pattern=".{2,128}"
                                 autocomplete="off"
                                 required>
                         </label>
@@ -150,7 +150,7 @@
                                 name="autor"
                                 placeholder="Introduzca el autor"
                                 class="input_text fsize30 w500px"
-                                pattern="[a-zA-Z_0-9_ ]{2,64}"
+                                pattern=".{2,128}"
                                 autocomplete="off"
                                 required>
                         </label>
@@ -161,7 +161,7 @@
                                 name="editorial"
                                 placeholder="Introduzca la editorial"
                                 class="input_text fsize30 w500px"
-                                pattern="[a-zA-Z_0-9_ ]{2,64}"
+                                pattern=".{2,128}"
                                 autocomplete="off"
                                 required>
                         </label>

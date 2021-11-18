@@ -11,41 +11,41 @@
      */
     function getAllBooks(){
 
-            require("initDB.inc.php");
+        require("initDB.inc.php");
 
-            try {
-                $dbConn->beginTransaction();
-                $sql = 'select * from libros where borrado_virtual is null';
-                $query = $dbConn->prepare($sql);
-                $query->execute();
-                $dbConn = null;
+        try {
+            $dbConn->beginTransaction();
+            $sql = 'select * from libros where borrado_virtual is null';
+            $query = $dbConn->prepare($sql);
+            $query->execute();
+            $dbConn = null;
 
-                //array de libros
-                $librosObj = [];
+            //array de libros
+            $librosObj = [];
 
-                while($results = $query->fetch()){
-                    array_push($librosObj,new Libro(
-                        $results['url_imagen'],
-                        $results['cod_libro'],
-                        $results['titulo'],
-                        $results['autor'],
-                        $results['editorial'],
-                        $results['fecha_insercion']
-                    ));
-                }
+            while($results = $query->fetch()){
+                array_push($librosObj,new Libro(
+                    $results['url_imagen'],
+                    $results['cod_libro'],
+                    $results['titulo'],
+                    $results['autor'],
+                    $results['editorial'],
+                    $results['fecha_insercion']
+                ));
+            }
 
-                $query = null;
+            $query = null;
 
-                return $librosObj;                
+            return $librosObj;                
 
-            } catch (DOMException $e) {
-                print_r($e);
-                $dbConn->rollBack();
-                $dbConn = null;
-                return false;
-            }       
-
+        } catch (DOMException $e) {
+            print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
             return false;
+        }       
+
+        return false;
     }
 
     /**
@@ -586,9 +586,10 @@
      * @param   string  $_autor      Autor del libro
      */
     function updateLibro($_codLibro, $_titulo, $_autor){
-        try{
 
-            require("initDB.inc.php");
+        require("initDB.inc.php");
+
+        try{
 
             $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
             $dbConn->beginTransaction();     
@@ -600,7 +601,7 @@
             $query->bindParam(':codLibro',$_codLibro);
             $query->bindParam(':autor',$_autor);
 
-            $dbConn->execute();
+            $query->execute();
 
             $dbConn->commit();
 
@@ -617,6 +618,65 @@
         }
         return false;
 
+    }
+
+
+    function compruebaRecordar($login, $idSesion){
+
+        require("initDB.inc.php");
+
+        try {
+            
+            $dbConn->beginTransaction();
+
+            $sql = "select * from usuarios where login=? and ID_session=?";
+
+            $query = $dbConn->prepare($sql);
+
+            $query->execute([$login,$idSesion]);
+
+            $dbConn = null;
+
+            return !empty($query->fetchAll());
+
+        } catch (PDOException $e) {
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        }
+
+    }
+
+    function updateSessionID($login, $idSesion){
+        require("initDB.inc.php");
+
+        try{
+
+            $dbConn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+            $dbConn->beginTransaction();     
+            
+            $sql = "update usuarios set ID_session= :idSesion where login= :login";
+            $query = $dbConn->prepare($sql);
+            
+            $query->bindParam(':idSesion',$idSesion);
+            $query->bindParam(':login',$login);
+
+            $query->execute();
+
+            $dbConn->commit();
+
+            $dbConn = null;
+            $query = null;
+
+            return true;
+
+        } catch (PDOException $e) {
+            print_r($e);
+            $dbConn->rollBack();
+            $dbConn = null;
+            return false;
+        }
+        return false;
     }
 
 ?>

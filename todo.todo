@@ -1,5 +1,0 @@
-1. todas las funciones de la BBDD tienen que tener prepared statements (lo de :jamon)
-
-2. comprobar que todos los inputs tengan la longitud correspondiente en la base de datos
-
-3. autologin

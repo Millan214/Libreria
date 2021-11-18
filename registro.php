@@ -74,7 +74,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce un usuario"
-                        pattern=".{2,64}"
+                        pattern=".{2,128}"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['usuario']; }?>"
                         required
@@ -86,7 +86,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce tu nombre"
-                        pattern=".{2,64}"
+                        pattern=".{2,128}"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['nombre']; }?>"
                         required
@@ -98,7 +98,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce tu primer apellido"
-                        pattern=".{2,64}"
+                        pattern=".{2,128}"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['apellido']; }?>"
                         required
@@ -110,7 +110,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce un E-Mail"
-                        pattern=".{2,64}+@[a-z0-9.-]{1,15}+\.[a-z]{2,4}$"
+                        pattern=".{2,100}+@[a-z0-9.-]{1,15}+\.[a-z]{2,4}$"
                         autocomplete="off"
                         value="<?php if (isset($_POST['submit'])) { echo $_POST['email']; }?>"
                         required
@@ -122,7 +122,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="introduce una contraseña"
-                        pattern=".{2,64}"
+                        pattern=".{2,128}"
                         autocomplete="off"
                         required
                     >

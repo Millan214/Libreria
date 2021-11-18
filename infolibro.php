@@ -2,6 +2,7 @@
 
     session_start(); 
 
+    //Importamos todos los php
     foreach (glob("./controller/*.php") as $filename){
         require_once $filename;
     }
@@ -170,7 +171,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="sin nombre"
-                        pattern=".{2,64}"
+                        pattern=".{2,128}"
                         autocomplete="off"
                         value="<?php echo $libro->toArr()['titulo'];?>"
                         >
@@ -179,7 +180,7 @@
                         class="input_text fsize30 w500px"
                         spellcheck="false"
                         placeholder="sin nombre"
-                        pattern=".{2,64}"
+                        pattern=".{2,128}"
                         autocomplete="off"
                         value="<?php echo $libro->toArr()['autor'];?>"
                         >
@@ -192,10 +193,10 @@
                     <?php } ?>
 
                     <?php if (!checkLibroPrestado($user->toArr()['login'],$_SESSION['book_id'])) { ?>
-                        <input type="submit" value="Solicitar préstamo" name="submit" 
+                        <input type="submit" value="Solicitar préstamo" name="submit"
                         class="sombra_enlace box fsize30 purple">
                         <?php }else{ ?>
-                        <input type="submit" value="Devolver libro" name="devolver_submit" 
+                        <input type="submit" value="Devolver libro" name="devolver_submit"
                         class="sombra_enlace box fsize30 purple">
                     <?php }?>
                     
